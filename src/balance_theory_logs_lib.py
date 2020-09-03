@@ -1,7 +1,7 @@
 ###############################################################################
 # Omid55
-# Start date:     16 Sep 2020
-# Modified date:  14 Sep 2020
+# Start date:     03 Sep 2020
+# Modified date:  03 Sep 2020
 # Author:   Omid Askarisichani
 # Email:    omid55@cs.ucsb.edu
 # Module to load balance theory human subject study logs for every team.
