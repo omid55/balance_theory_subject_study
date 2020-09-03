@@ -90,9 +90,35 @@ class TestTeamLogsLoader(unittest.TestCase):
         np_testing.assert_array_equal(
             self.loader.members, np.array(['pogs01', 'pogs02', 'pogs03']))
 
-    # def test_load_influences_are_correct(self):
+    def test_load_influences_are_correct(self):
+        dt = [['pogs01', 'GD_influence_disaster1', [30, 30, 30], '2020-09-01 20:37:40'],
+              ['pogs02', 'GD_influence_disaster1', [0, 100, 0], '2020-09-01 20:37:48'],
+              ['pogs03', 'GD_influence_disaster1', [20, 20, 60], '2020-09-01 20:38:09'],
+              ['pogs01', 'GD_influence_disaster2', [100, 0, 0], '2020-09-01 20:43:50'],
+              ['pogs02', 'GD_influence_disaster2', [30, 30, 30], '2020-09-01 20:43:57'],
+              ['pogs03', 'GD_influence_disaster2', [30, 30, 40], '2020-09-01 20:44:02'],
+              ['pogs01', 'GD_influence_disaster3', [100, 0, 0], '2020-09-01 20:49:22'],
+              ['pogs02', 'GD_influence_disaster3', [30, 40, 30], '2020-09-01 20:49:35'],
+              ['pogs03', 'GD_influence_disaster3', [50, 50, 0], '2020-09-01 20:49:43']]
+        expected_influences = pd.DataFrame(dt,
+            columns=['sender', 'question', 'value', 'timestamp'])
+        pd_testing.assert_frame_equal(
+            expected_influences, self.loader.influences)
 
-    # def test_load_appraisals_are_correct(self):
+    def test_load_appraisals_are_correct(self):
+        dt = [['pogs01', 'GD_appraisal_disaster1', [0, -1, 2], '2020-09-01 20:39:35'],
+              ['pogs02', 'GD_appraisal_disaster1', [-10, 10, -10], '2020-09-01 20:40:23'],
+              ['pogs03', 'GD_appraisal_disaster1', [-10, 0, 0], '2020-09-01 20:40:37'],
+              ['pogs01', 'GD_appraisal_disaster2', [10, 10, 10], '2020-09-01 20:44:42'],
+              ['pogs02', 'GD_appraisal_disaster2', [-3, -1, -2], '2020-09-01 20:44:52'],
+              ['pogs03', 'GD_appraisal_disaster2', [10, -10, -1], '2020-09-01 20:45:20'],
+              ['pogs01', 'GD_appraisal_disaster3', [10, 10, 10], '2020-09-01 20:50:35'],
+              ['pogs02', 'GD_appraisal_disaster3', [1, 10, 1], '2020-09-01 20:50:56'],
+              ['pogs03', 'GD_appraisal_disaster3', [-10, -10, 10], '2020-09-01 20:51:04']]
+        expected_appraisals = pd.DataFrame(dt,
+            columns=['sender', 'question', 'value', 'timestamp'])
+        pd_testing.assert_frame_equal(
+            expected_appraisals, self.loader.appraisals)
 
     # # =========================================================================
     # # ======================= get_influence_matrices ==========================

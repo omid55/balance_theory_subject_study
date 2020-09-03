@@ -48,7 +48,6 @@ class TeamLogsLoader(object):
             influences: All influences individuals reported.
             appraisals: All appraisals w.r.t. others individuals reported.
             members: List of usernames in the team.
-            team_id: The integer ID of the team.
     """
 
     # Task id to task name map.
@@ -132,7 +131,7 @@ class TeamLogsLoader(object):
         self.appraisals = None
         self._load(directory=directory)
 
-    def _load(self, directory: Text, team_size: int = 3) -> None:
+    def _load(self, directory: Text) -> None:
         """Loads all logs for one team in the given directory.
         """
         logs_filepath = '{}/EventLog_*.csv'.format(directory)
@@ -140,6 +139,15 @@ class TeamLogsLoader(object):
         logs = pd.read_csv(log_filepath, sep=';', skiprows=1)
         logs.dropna(axis=1, how='all', inplace=True)
         logs = logs.sort_values(by='Timestamp')
+
+        # Subjects and their order.
+        subjects_filepath_exp = '{}/SubjectExport_session_*.csv'.format(directory)
+        subjects_filepath = glob.glob(expanduser(subjects_filepath_exp))[0]
+        subjects = pd.read_csv(subjects_filepath, sep=';', skiprows=1)
+        subjects_order = list(subjects['SubjectExternalId'])
+        self.members = np.sort(subjects_order)
+        subjects_arg_sort = np.argsort(subjects_order)
+        team_size = len(self.members)
 
         # Ignoring all check_in logs.
         logs = logs[~(logs['EventType'] == 'CHECK_IN')]
@@ -197,6 +205,8 @@ class TeamLogsLoader(object):
                                     if str.isdigit(selection):
                                         influence_values[
                                             index // 11] = selection
+                                # Fixing the order of subjects' influences alphabetically.
+                                influence_values = influence_values[subjects_arg_sort]
                                 influences_dt.append(
                                     [sender, question_name,
                                     influence_values, timestamp])
@@ -244,12 +254,14 @@ class TeamLogsLoader(object):
         members = np.unique(sep_appraisals['sender'])
         questions = np.unique(sep_appraisals['question'])
         appraisals_dt = []
-        for member in members:
-            for question in questions:
+        for question in questions:
+            for member in members:
                 appraisal_values = np.zeros(team_size)
                 df = sep_appraisals[(sep_appraisals['sender'] == member) & (sep_appraisals['question'] == question)]
                 for _, row in df.iterrows():
                     appraisal_values[int(row.attribute[-1]) - 1] = row.value
+                # Fixing the order of subjects' appraisals alphabetically.
+                appraisal_values = appraisal_values[subjects_arg_sort]
                 appraisals_dt.append([member, question, appraisal_values, df.timestamp.iloc[-1]])
         self.appraisals = pd.DataFrame(
             appraisals_dt, columns = [
@@ -260,11 +272,6 @@ class TeamLogsLoader(object):
         self.messages.sort_values(by='timestamp', inplace=True)
         self.influences.sort_values(by='timestamp', inplace=True)
         self.appraisals.sort_values(by='timestamp', inplace=True)
-        self.members = np.unique(
-            self.influences.sender.tolist() +
-            self.messages.sender.tolist() +
-            self.answers.sender.tolist() + 
-            self.appraisals.sender.tolist())
         if self.members.size > 0 and '.' in self.members[0]:
             self.team_id = self.members[0].split('.')[0]
 
