@@ -1,0 +1,4 @@
+sep=;
+AttributeName;DoubleValue;TaskConfigurationId;StringValue;IntegerValue;Id;
+surveyBluePrint;null;130;In file: TaskExecutionAttribute_null;null;245;
+answerSheet;null;130;In file: TaskExecutionAttribute_245;null;246;

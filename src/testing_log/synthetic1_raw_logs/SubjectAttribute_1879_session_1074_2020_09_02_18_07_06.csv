@@ -1,0 +1,5 @@
+sep=;
+AttributeName;Latest;SubjectId;InternalAttribute;StringValue;IntegerValue;RealValue;Id;
+SUBJECT_DEFAULT_BACKGROUND_COLOR;null;1879;true;#11f702;null;null;13915;
+SUBJECT_DEFAULT_FONT_COLOR;null;1879;true;#000000;null;null;13916;
+surveyAnswers1;null;1879;true;;null;null;13922;

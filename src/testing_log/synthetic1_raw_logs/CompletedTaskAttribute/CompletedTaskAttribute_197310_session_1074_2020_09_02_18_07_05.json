@@ -1,0 +1,1 @@
+[{"variableName":"${allAnswers}","variableReplacements":"Mike's answer : 2000<br/>Jess's answer : $2500<br/>Sara's answer : 1500<br/>"},{"variableName":"${question1}","variableReplacements":"Mike's answer : 2000 "},{"variableName":"${question2}","variableReplacements":"Jess's answer : $2500 "},{"variableName":"${question3}","variableReplacements":"Sara's answer : 1500 "}]

@@ -1,0 +1,56 @@
+sep=;
+AttributeName;DoubleValue;LastAuthorSubjectId;ExtraData;CompletedTaskId;StringValue;IntegerValue;Id;
+surveyAnswer0;0.0;2067;InputField;17208;$3000;-1;197296;1074
+surveyAnswer0;0.0;1879;InputField;17209;$2000;-1;197295;1074
+surveyAnswer0;0.0;1878;InputField;17210;$1000;-1;197294;1074
+surveyAnswer0;0.0;2067;InputField;17212;$2500;-1;197299;1074
+surveyAnswer0;0.0;1879;InputField;17213;2000;-1;197298;1074
+surveyAnswer0;0.0;1878;InputField;17214;1500;-1;197297;1074
+surveyAnswer1;0.0;2067;RadioTableField;17215;In file: CompletedTaskAttribute_197297;-1;197302;1074
+surveyAnswer1;0.0;1879;RadioTableField;17216;In file: CompletedTaskAttribute_197302;-1;197301;1074
+surveyAnswer1;0.0;1878;RadioTableField;17217;In file: CompletedTaskAttribute_197301;-1;197300;1074
+customVariables;null;null;null;17218;In file: CompletedTaskAttribute_197300;null;197303;1074
+surveyAnswer3;0.0;2067;SelectField;17218;-10;-1;197311;1074
+customVariables;null;null;null;17219;In file: CompletedTaskAttribute_197311;null;197304;1074
+surveyAnswer1;0.0;1879;SelectField;17219;+10;-1;197308;1074
+surveyAnswer2;0.0;1879;SelectField;17219;-10;-1;197309;1074
+surveyAnswer3;0.0;1879;SelectField;17219;-10;-1;197310;1074
+customVariables;null;null;null;17220;In file: CompletedTaskAttribute_197310;null;197305;1074
+surveyAnswer1;0.0;1878;SelectField;17220;-1;-1;197306;1074
+surveyAnswer2;0.0;1878;SelectField;17220;+2;-1;197307;1074
+surveyAnswer0;0.0;2067;InputField;17222;$2100;-1;197314;1074
+surveyAnswer0;0.0;1879;InputField;17223;$2200;-1;197313;1074
+surveyAnswer0;0.0;1878;InputField;17224;$2000;-1;197312;1074
+surveyAnswer1;0.0;2067;RadioTableField;17225;In file: CompletedTaskAttribute_197312;-1;197320;1074
+surveyAnswer1;0.0;1879;RadioTableField;17226;In file: CompletedTaskAttribute_197320;-1;197319;1074
+surveyAnswer1;0.0;1878;RadioTableField;17227;In file: CompletedTaskAttribute_197319;-1;197315;1074
+customVariables;null;null;null;17228;In file: CompletedTaskAttribute_197315;null;197316;1074
+surveyAnswer1;0.0;2067;SelectField;17228;-10;-1;197327;1074
+surveyAnswer2;0.0;2067;SelectField;17228;-1;-1;197328;1074
+surveyAnswer3;0.0;2067;SelectField;17228;+10;-1;197329;1074
+customVariables;null;null;null;17229;In file: CompletedTaskAttribute_197329;null;197317;1074
+surveyAnswer1;0.0;1879;SelectField;17229;-1;-1;197324;1074
+surveyAnswer2;0.0;1879;SelectField;17229;-2;-1;197325;1074
+surveyAnswer3;0.0;1879;SelectField;17229;-3;-1;197326;1074
+customVariables;null;null;null;17230;In file: CompletedTaskAttribute_197326;null;197318;1074
+surveyAnswer1;0.0;1878;SelectField;17230;+10;-1;197321;1074
+surveyAnswer2;0.0;1878;SelectField;17230;+10;-1;197322;1074
+surveyAnswer3;0.0;1878;SelectField;17230;+10;-1;197323;1074
+surveyAnswer0;0.0;2067;InputField;17232;$2000;-1;197332;1074
+surveyAnswer0;0.0;1879;InputField;17233;2000;-1;197331;1074
+surveyAnswer0;0.0;1878;InputField;17234;2000;-1;197330;1074
+surveyAnswer1;0.0;2067;RadioTableField;17235;In file: CompletedTaskAttribute_197330;-1;197338;1074
+surveyAnswer1;0.0;1879;RadioTableField;17236;In file: CompletedTaskAttribute_197338;-1;197334;1074
+surveyAnswer1;0.0;1878;RadioTableField;17237;In file: CompletedTaskAttribute_197334;-1;197333;1074
+customVariables;null;null;null;17238;In file: CompletedTaskAttribute_197333;null;197335;1074
+surveyAnswer1;0.0;2067;SelectField;17238;-10;-1;197345;1074
+surveyAnswer2;0.0;2067;SelectField;17238;+10;-1;197346;1074
+surveyAnswer3;0.0;2067;SelectField;17238;-10;-1;197347;1074
+customVariables;null;null;null;17239;In file: CompletedTaskAttribute_197347;null;197336;1074
+surveyAnswer1;0.0;1879;SelectField;17239;+10;-1;197342;1074
+surveyAnswer2;0.0;1879;SelectField;17239;+1;-1;197343;1074
+surveyAnswer3;0.0;1879;SelectField;17239;+1;-1;197344;1074
+customVariables;null;null;null;17240;In file: CompletedTaskAttribute_197344;null;197337;1074
+surveyAnswer3;0.0;1878;SelectField;17240;+10;-1;197339;1074
+surveyAnswer2;0.0;1878;SelectField;17240;+10;-1;197340;1074
+surveyAnswer1;0.0;1878;SelectField;17240;+10;-1;197341;1074
