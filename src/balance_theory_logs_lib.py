@@ -305,8 +305,16 @@ class TeamLogsLoader(object):
 
 
 def get_all_groups_info_in_one_dataframe(
-        teams_log: List[TeamLogsLoader]) -> pd.DataFrame:
+        teams_log: List[TeamLogsLoader],
+        with_space: bool = False) -> pd.DataFrame:
     """Gets all teams' logs in one dataframe.
+
+    Args:
+
+    Returns:
+
+    Raises:
+        ValueError:
     """
     dt = []
     issues = ['asbestos', 'disaster', 'sports', 'school', 'surgery']
@@ -353,7 +361,10 @@ def get_all_groups_info_in_one_dataframe(
                                         len(influence), issue, member))
                             else:
                                 inf = list(influence.iloc[0]['value'])
-                        member_influences.extend(inf)
+                        if with_space:
+                            member_influences.extend(inf + [''])
+                        else:
+                            member_influences.extend(inf)
 
                         appraisal = appraisals[(
                             appraisals['sender'] == member) &
@@ -369,18 +380,37 @@ def get_all_groups_info_in_one_dataframe(
                                         len(appraisal), issue, member))
                             else:
                                 appr = list(appraisal.iloc[0]['value'])
-                        member_appraisals.extend(appr)
-                dt.append(
-                    [team_id, issue, member] +
-                    member_answers + member_influences + member_appraisals)
-    data = pd.DataFrame(dt, columns = [
-        'Group', 'Issue', 'Person', 'Initial opinion',
-        'Period1 opinion', 'Period2 opinion', 'Period3 opinion',
-        'Period1 w1', 'Period1 w2', 'Period1 w3',
-        'Period2 w1', 'Period2 w2', 'Period2 w3',
-        'Period3 w1', 'Period3 w2', 'Period3 w3',
-        'Period1 a1', 'Period1 a2', 'Period1 a3',
-        'Period2 a1', 'Period2 a2', 'Period2 a3',
-        'Period3 a1', 'Period3 a2', 'Period3 a3'])
+                        if with_space and i != 3:
+                            member_appraisals.extend(appr + [''])
+                        else:
+                            member_appraisals.extend(appr)
+                if with_space:
+                    dt.append([team_id, issue, member] + member_answers + [''] + member_influences + member_appraisals)
+                else:
+                    dt.append([team_id, issue, member] + member_answers + member_influences + member_appraisals)
+        if with_space:
+            dt.append(['' for _ in range(len(dt[0]))])
+    if with_space:
+        columns = [
+            'Group', 'Issue', 'Person', 'Initial opinion',
+            'Period1 opinion', 'Period2 opinion', 'Period3 opinion', '',
+            'Period1 w1', 'Period1 w2', 'Period1 w3', '',
+            'Period2 w1', 'Period2 w2', 'Period2 w3', '',
+            'Period3 w1', 'Period3 w2', 'Period3 w3', '',
+            'Period1 a1', 'Period1 a2', 'Period1 a3', '',
+            'Period2 a1', 'Period2 a2', 'Period2 a3', '',
+            'Period3 a1', 'Period3 a2', 'Period3 a3']
+    else:
+        columns = [
+            'Group', 'Issue', 'Person', 'Initial opinion',
+            'Period1 opinion', 'Period2 opinion', 'Period3 opinion',
+            'Period1 w1', 'Period1 w2', 'Period1 w3',
+            'Period2 w1', 'Period2 w2', 'Period2 w3',
+            'Period3 w1', 'Period3 w2', 'Period3 w3',
+            'Period1 a1', 'Period1 a2', 'Period1 a3',
+            'Period2 a1', 'Period2 a2', 'Period2 a3',
+            'Period3 a1', 'Period3 a2', 'Period3 a3']
+
+    data = pd.DataFrame(dt, columns=columns)
     return data
 
