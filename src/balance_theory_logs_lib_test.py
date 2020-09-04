@@ -90,6 +90,18 @@ class TestTeamLogsLoader(unittest.TestCase):
         np_testing.assert_array_equal(
             self.loader.members, np.array(['pogs01', 'pogs02', 'pogs03']))
 
+    def test_load_questions_order_are_correct(self):
+        expected_questions_order = [
+            'GD_solo_disaster_initial', 'GD_group_disaster1',
+            'GD_solo_disaster1', 'GD_influence_disaster1',
+            'GD_appraisal_disaster1', 'GD_group_disaster2',
+            'GD_solo_disaster2', 'GD_influence_disaster2',
+            'GD_appraisal_disaster2', 'GD_group_disaster3',
+            'GD_solo_disaster3', 'GD_influence_disaster3',
+            'GD_appraisal_disaster3']
+        np_testing.assert_array_equal(
+            self.loader.questions_order, expected_questions_order)
+
     def test_load_influences_are_correct(self):
         dt = [['pogs01', 'GD_influence_disaster1', [30, 30, 30], '2020-09-01 20:37:40'],
               ['pogs02', 'GD_influence_disaster1', [0, 100, 0], '2020-09-01 20:37:48'],
@@ -120,395 +132,35 @@ class TestTeamLogsLoader(unittest.TestCase):
         pd_testing.assert_frame_equal(
             expected_appraisals, self.loader.appraisals)
 
-    # # =========================================================================
-    # # ======================= get_influence_matrices ==========================
-    # # =========================================================================
-    # def test_get_influence_matrices2x2(self):
-    #     expected_question_orders = ['surgery1', 'surgery2']
-    #     expected_influence_matrices = [
-    #         np.array([[0.9, 0.1],
-    #                   [0.49, 0.51]]),
-    #         np.array([[0.01, 0.99],
-    #                   [0.0, 1.0]])]
-    #     expected_influences_from_data = [
-    #         np.array([[True, False], [True, True]]),
-    #         np.array([[True, True], [True, True]])
-    #     ]
-    #     computed_questions_order, computed_influence_matrices, computed_influences_from_data = (
-    #         self.loader.get_influence_matrices2x2(make_it_row_stochastic=True))
-    #     np_testing.assert_array_equal(
-    #         expected_question_orders, computed_questions_order)
-    #     np_testing.assert_array_equal(
-    #         expected_influence_matrices,
-    #         computed_influence_matrices)
-    #     np_testing.assert_array_equal(
-    #         expected_influences_from_data,
-    #         computed_influences_from_data)
-
-    # @parameterized.expand([
-    #     ['with_one_missing',
-    #         pd.DataFrame({
-    #             "sender":{"0":"pogs10.1","1":"pogs10.2","2":"pogs10.2"},
-    #             "question":{"0":"GD_influence_surgery1","1":"GD_influence_surgery1","2":"GD_influence_surgery1"},
-    #             "input":{"0":"self","1":"self","2":"other"},"value":{"0":"90","1":"51","2":"49"},
-    #             "timestamp":{"0":"2020-01-16 14:15:11","1":"2020-01-16 14:15:20","2":"2020-01-16 14:15:22"}}),
-    #     [np.array([[0.9, 0.1],
-    #                [0.49, 0.51]])],
-    #     ],
-    #     ['with_one_missing_and_one_empty',
-    #         pd.DataFrame({
-    #             "sender":{"0":"pogs10.1","1":"pogs10.2","2":"pogs10.2"},
-    #             "question":{"0":"GD_influence_surgery1","1":"GD_influence_surgery1","2":"GD_influence_surgery1"},
-    #             "input":{"0":"self","1":"self","2":"other"},"value":{"0":"","1":"51","2":"49"},
-    #             "timestamp":{"0":"2020-01-16 14:15:11","1":"2020-01-16 14:15:20","2":"2020-01-16 14:15:22"}}),
-    #     [np.array([[0.5, 0.5],
-    #                [0.49, 0.51]])],
-    #     ],
-    #     ['with_only_one',
-    #         pd.DataFrame({
-    #             "sender":{"0":"pogs10.1"},
-    #             "question":{"0":"GD_influence_surgery1"},
-    #             "input":{"0":"self"},"value":{"0":"50",},
-    #             "timestamp":{"0":"2020-01-16 14:15:11"}}),
-    #     [np.array([[0.50, 0.50],
-    #                [0.50, 0.50]])],
-    #     ],
-    #     ['with_larger_values',
-    #         pd.DataFrame({
-    #             "sender":{"0":"pogs10.1","1":"pogs10.2","2":"pogs10.2"},
-    #             "question":{"0":"GD_influence_surgery1","1":"GD_influence_surgery1","2":"GD_influence_surgery1"},
-    #             "input":{"0":"self","1":"self","2":"other"},"value":{"0":"","1":"60","2":"90"},
-    #             "timestamp":{"0":"2020-01-16 14:15:11","1":"2020-01-16 14:15:20","2":"2020-01-16 14:15:22"}}),
-    #     [np.array([[0.5, 0.5],
-    #                [0.6, 0.4]])],
-    #     ],
-    #     ['with_duplicate_due_to_change_of_value',
-    #         pd.DataFrame({
-    #             "sender":{"0":"pogs10.1","0":"pogs10.1","1":"pogs10.2","2":"pogs10.2"},
-    #             "question":{"0":"GD_influence_surgery1","0":"GD_influence_surgery1","1":"GD_influence_surgery1","2":"GD_influence_surgery1"},
-    #             "input":{"0":"self","0":"self","1":"self","2":"other"},
-    #             "value":{"0":"55","0":"5","1":"51","2":"49"},
-    #             "timestamp":{"0":"2020-01-16 14:15:11","0":"2020-01-16 14:15:12","1":"2020-01-16 14:15:20","2":"2020-01-16 14:15:22"}}),
-    #     [np.array([[0.05, 0.95],
-    #                [0.49, 0.51]])],
-    #     ]])
-    # def test_get_influence_matrices2x2_mocked(self, name, influences, expected_influence_matrices):
-    #     self.loader.influences = influences
-    #     _, computed_influence_matrices, _ = (
-    #         self.loader.get_influence_matrices2x2(make_it_row_stochastic=True))
-    #     np_testing.assert_array_equal(
-    #         expected_influence_matrices,
-    #         computed_influence_matrices)
-
-    # # =========================================================================
-    # # ============== get_frustrations_in_simple_format ========================
-    # # =========================================================================
-    # def test_get_frustrations_in_simple_format(self):
-    #     expected = pd.DataFrame({
-    #         "Question":{0: "surgery"},
-    #         "pogs10.1's answer":{0: "0"},
-    #         "pogs10.2's answer":{0: "5"}})
-    #     computed = self.loader.get_frustrations_in_simple_format()
-    #     pd_testing.assert_frame_equal(expected, computed)
-
-    # # =========================================================================
-    # # =============== get_all_groups_info_in_one_dataframe ====================
-    # # =========================================================================
-    # def test_get_all_groups_info_in_one_dataframe(self):
-    #     teams_log_list = {'s10': self.loader}
-    #     dt = [
-    #         ['s10', '1', 'asbestos', '', '', '', '', '', '', '', '', '', ''],
-    #         ['s10', '1', 'disaster', '', '', '', '', '', '', '', '', '', ''],
-    #         ['s10', '1', 'sports', '', '', '', '', '', '', '', '', '', ''],
-    #         ['s10', '1', 'school', '', '', '', '', '', '', '', '', '', ''],
-    #         ['s10', '1', 'surgery', '0.7', '0.8', '0.9', '0.1', '', '0.01', '0.99', '0.85', '', ''],
-    #         ['s10', '2', 'asbestos', '', '', '', '', '', '', '', '', '', ''],
-    #         ['s10', '2', 'disaster', '', '', '', '', '', '', '', '', '', ''],
-    #         ['s10', '2', 'sports', '0.1111', '', '', '', '', '', '', '', '', ''],
-    #         ['s10', '2', 'school', '', '', '', '', '', '', '', '', '', ''],
-    #         ['s10', '2', 'surgery', '0.5', '0.6', '0.51', '0.49', '1', '1.0', '0.0', '0.8', '', '']]
-    #     expected = pd.DataFrame(dt, columns = [
-    #         'Group', 'Person', 'Issue', 'Initial opinion',
-    #         'Period1 opinion', 'Period1 wii', 'Period1 wij',
-    #         'Period2 opinion', 'Period2 wii', 'Period2 wij',
-    #         'Period3 opinion', 'Period3 wii', 'Period3 wij'])
-    #     computed = bt.get_all_groups_info_in_one_dataframe(
-    #         teams_log_list)
-    #     pd_testing.assert_frame_equal(expected, computed)
-
-    # # =========================================================================
-    # # ============== compute_attachment_to_initial_opinion ====================
-    # # =========================================================================
-    # def test_compute_attachment_raises_when_not_matching_opinions(self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7]
-    #     w12 = [0.1, 0.0, 0.2]
-    #     with self.assertRaises(ValueError):
-    #         bt.compute_attachment_to_initial_opinion(x1, x2, w12)
-
-    # def test_compute_attachment_raises_when_not_matching_opinions_influence(
-    #         self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7, 0.5]
-    #     w12 = [0.1, 0.0]
-    #     with self.assertRaises(ValueError):
-    #         bt.compute_attachment_to_initial_opinion(x1, x2, w12)
-
-    # def test_compute_attachment_raises_when_start_k_was_not_0_or_1(
-    #         self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7, 0.5]
-    #     w12 = [0.1, 0.0]
-    #     with self.assertRaises(ValueError):
-    #         bt.compute_attachment_to_initial_opinion(x1, x2, w12, start_k=-1)
-
-    # def test_compute_attachment_to_initial_op_when_denom_to_sum_almost_zero(
-    #         self):
-    #     x1 = [0.8, 0.85, 0.92, 0.92]
-    #     x2 = [0.6, 0.6, 0.7, 0.7]
-    #     w12 = [0.1, 0.2, 0.1]
-    #     expected_a11 = [
-    #         (0.85 - 0.8) / (0.1 * (0.6 - 0.8)),
-    #         np.nan,  # (0.92 - 0.8) / (0.85 - 0.8 + 0.2 * (0.6 - 0.85)),
-    #         (0.92 - 0.8) / (0.92 - 0.8 + 0.1 * (0.7 - 0.92))
-    #         ]
-    #     expected_details = [{}, {'n/0': 1}, {}]
-    #     computed_a11, details = bt.compute_attachment_to_initial_opinion(
-    #         xi=x1, xj=x2, wij=w12, eps=0)
-    #     np_testing.assert_array_almost_equal(expected_a11, computed_a11)
-    #     utils.assert_dict_equals({'1': expected_details}, {'1': details})
-
-    # def test_compute_attachment_to_initial_opinion(self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7, 0.5]
-    #     w12 = [0.1, 0.0, 0.2]
-    #     expected_a11 = [0.1/0.08, 0.5/0.1, 0.3/0.52]
-    #     expected_details = [{}, {}, {}]
-    #     computed_a11, details = bt.compute_attachment_to_initial_opinion(
-    #         xi=x1, xj=x2, wij=w12, eps=0)
-    #     np_testing.assert_array_almost_equal(expected_a11, computed_a11)
-    #     utils.assert_dict_equals({'1': expected_details}, {'1': details})
-
-    # def test_compute_attachment_to_initial_opinion_when_start_k_equals_1(self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7, 0.5]
-    #     w12 = [0.1, 0.0, 0.2]
-    #     expected_a11 = [0.5/0.1, 0.3/0.52]
-    #     computed_a11, _ = bt.compute_attachment_to_initial_opinion(
-    #         xi=x1, xj=x2, wij=w12, start_k=1, eps=0)
-    #     np_testing.assert_array_almost_equal(expected_a11, computed_a11)
-
-    # def test_compute_attachment_to_initial_opinion_when_division_by_zero(self):
-    #     x1 = [0.2, 0.2, 0.2]
-    #     x2 = [0.4, 0.4, 0.4]
-    #     w12 = [0.1, 0.0]
-    #     expected_a11 = [0 / 0.02,
-    #                     np.nan]
-    #     computed_a11, _ = bt.compute_attachment_to_initial_opinion(
-    #         xi=x1, xj=x2, wij=w12, eps=0)
-    #     np_testing.assert_array_almost_equal(expected_a11, computed_a11)
-
-    # def test_compute_attachment_to_initial_when_division_by_zero_with_eps(self):
-    #     x1 = [0.2, 0.2, 0.2]
-    #     x2 = [0.4, 0.4, 0.4]
-    #     w12 = [0.1, 0.0]
-    #     eps = 0.01
-    #     expected_a11 = [(0 + eps) / (0.02 + eps),
-    #                     (0 + eps) / (0 + eps)]
-    #     computed_a11, _ = bt.compute_attachment_to_initial_opinion(
-    #         xi=x1, xj=x2, wij=w12, eps=eps)
-    #     np_testing.assert_array_almost_equal(expected_a11, computed_a11)
-
-    # # =========================================================================
-    # # =========== compute_attachment_to_opinion_before_discussion =============
-    # # =========================================================================
-    # def test_compute_attachment_before_disc_raises_when_not_matching_opinions(
-    #         self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7]
-    #     w12 = [0.1, 0.0, 0.2]
-    #     with self.assertRaises(ValueError):
-    #         bt.compute_attachment_to_opinion_before_discussion(x1, x2, w12)
-
-    # def test_compute_attachment_bef_disc_raises_when_not_matching_op_influence(
-    #         self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7, 0.5]
-    #     w12 = [0.1, 0.0]
-    #     with self.assertRaises(ValueError):
-    #         bt.compute_attachment_to_opinion_before_discussion(x1, x2, w12)
-
-    # def test_compute_attachment_before_disc_raises_when_start_k_was_not_0_or_1(
-    #         self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7, 0.5]
-    #     w12 = [0.1, 0.0]
-    #     with self.assertRaises(ValueError):
-    #         bt.compute_attachment_to_opinion_before_discussion(
-    #             x1, x2, w12, start_k=-1)
-
-    # def test_compute_attachment_to_opinion_before_discussion(self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7, 0.5]
-    #     w12 = [0.1, 0.0, 0.2]
-    #     expected_a11 = [
-    #         0.1/0.08,
-    #         (0.6-0.1)/(0.2-0.1),
-    #         (0.4-0.2)/(0.6-0.2+0.2*(0.7-0.6))]
-    #     computed_a11, _ = bt.compute_attachment_to_opinion_before_discussion(
-    #         xi=x1, xj=x2, wij=w12, eps=0)
-    #     np_testing.assert_array_almost_equal(expected_a11, computed_a11)
-
-    # def test_compute_attachment_to_opinion_before_disc_when_start_k_equals_1(
-    #         self):
-    #     x1 = [0.1, 0.2, 0.6, 0.4]
-    #     x2 = [0.9, 0.4, 0.7, 0.5]
-    #     w12 = [0.1, 0.0, 0.2]
-    #     expected_a11 = [(0.6-0.1)/(0.2-0.1),
-    #                     (0.4-0.2)/(0.6-0.2+0.2*(0.7-0.6))]
-    #     computed_a11, _ = bt.compute_attachment_to_opinion_before_discussion(
-    #         xi=x1, xj=x2, wij=w12, start_k=1, eps=0)
-    #     np_testing.assert_array_almost_equal(expected_a11, computed_a11)
-
-    # def test_compute_attachment_to_opinion_before_discussion_when_div_by_zero(
-    #         self):
-    #     x1 = [0.2, 0.2, 0.2]
-    #     x2 = [0.4, 0.4, 0.4]
-    #     w12 = [0.1, 0.0]
-    #     expected_a11 = [0, np.nan]
-    #     computed_a11, _ = bt.compute_attachment_to_opinion_before_discussion(
-    #         xi=x1, xj=x2, wij=w12, eps=0)
-    #     np_testing.assert_array_almost_equal(expected_a11, computed_a11)
-
-    # def test_compute_attachment_to_opinion_bef_disc_when_div_by_zero_with_eps(
-    #         self):
-    #     x1 = [0.2, 0.2, 0.2]
-    #     x2 = [0.4, 0.4, 0.4]
-    #     w12 = [0.1, 0.0]
-    #     eps = 0.01
-    #     expected_a11 = [(0.2 - 0.2 + eps) / (0.1 * (0.4 - 0.2) + eps),
-    #                     eps / eps]
-    #     computed_a11, _ = bt.compute_attachment_to_opinion_before_discussion(
-    #         xi=x1, xj=x2, wij=w12, eps=eps)
-    #     np_testing.assert_array_almost_equal(expected_a11, computed_a11)
-
-    # # =========================================================================
-    # # ================== compute_all_teams_attachments ========================
-    # # =========================================================================
-    # def test_compute_all_teams_attachments(self):
-    #     # Attachment to the initial opinion.
-    #     teams_data = {
-    #         55: {
-    #             'asbestos': {
-    #                 'w12': [0.1, 0.0, 0.2],
-    #                 'w21': [0.0, 0.0, 0.0],
-    #                 'x1': [0.1, 0.2, 0.6, 0.4],
-    #                 'x2': [0.9, 0.4, 0.7, 0.5]},
-    #             'surgery': {
-    #                 'w12': [0.35, 0.4, 0.5],
-    #                 'w21': [0.25, 0.3, 0.3],
-    #                 'x1': [0.6, 0.65, 0.7, 0.7],
-    #                 'x2': [0.75, 0.5, 0.6, 0.7]}}}
-    #     expected_attachments = {
-    #         55: {
-    #             'asbestos': {
-    #                 'a11': [0.1/0.08, 0.5/0.1, 0.3/0.52],
-    #                 'a22': [np.nan, -0.2/-0.5, -0.4/-0.2],    # Nan was -0.5/0.
-    #                 'a11_nan_details': [{}, {}, {}],
-    #                 'a22_nan_details': [
-    #                     {'n/0': 1, 'xi[k]-xi[0]==0': 1, 'wij[k]==0': 1}, {}, {}]
-    #                 },
-    #             'surgery': {
-    #                 'a11': [0.05/(0.35*0.15),
-    #                         0.1/(0.05+0.4*-0.15),
-    #                         0.1/(0.1+0.5*-0.1)],
-    #                 'a22': [-0.25/(0.25*-0.15),
-    #                         -0.15/(-0.25+0.3*0.15),
-    #                         -0.05/(-0.15+0.3*0.1)],
-    #                 'a11_nan_details': [{}, {}, {}],
-    #                 'a22_nan_details': [{}, {}, {}]
-    #                 }}}
-    #     computed_attachments = bt.compute_all_teams_attachments(
-    #         teams_data=teams_data,
-    #         start_k=0,
-    #         use_attachment_to_initial_opinion=True,
-    #         eps=0)
-    #     utils.assert_dict_equals(
-    #         d1=expected_attachments,
-    #         d2=computed_attachments,
-    #         almost_number_of_decimals=6)
-
-    # def test_compute_all_teams_attachments_with_start_k_equals_1(self):
-    #     teams_data = {
-    #         55: {
-    #             'asbestos': {
-    #                 'w12': [0.1, 0.0, 0.2],
-    #                 'w21': [0.0, 0.0, 0.0],
-    #                 'x1': [0.1, 0.2, 0.6, 0.4],
-    #                 'x2': [0.9, 0.4, 0.7, 0.5]},
-    #             'surgery': {
-    #                 'w12': [0.35, 0.4, 0.5],
-    #                 'w21': [0.25, 0.3, 0.3],
-    #                 'x1': [0.6, 0.65, 0.7, 0.7],
-    #                 'x2': [0.75, 0.5, 0.6, 0.7]}}}
-    #     expected_attachments = {
-    #         55: {
-    #             'asbestos': {
-    #                 'a11': [0.5/0.1, 0.3/0.52],
-    #                 'a22': [-0.2/-0.5, -0.4/-0.2],
-    #                 'a11_nan_details': [{}, {}],
-    #                 'a22_nan_details': [{}, {}]},
-    #             'surgery': {
-    #                 'a11': [0.1/(0.05+0.4*-0.15),
-    #                         0.1/(0.1+0.5*-0.1)],
-    #                 'a22': [-0.15/(-0.25+0.3*0.15),
-    #                         -0.05/(-0.15+0.3*0.1)],
-    #                         'a11_nan_details': [{}, {}],
-    #                         'a22_nan_details': [{}, {}]}}}
-    #     computed_attachments = bt.compute_all_teams_attachments(
-    #         teams_data=teams_data, start_k=1, eps=0)
-    #     utils.assert_dict_equals(
-    #         d1=expected_attachments,
-    #         d2=computed_attachments,
-    #         almost_number_of_decimals=6)
-
-    # def test_compute_all_teams_attachments_to_before_discussion_opinion(self):
-    #     teams_data = {
-    #         55: {
-    #             'asbestos': {
-    #                 'w12': [0.1, 0.0, 0.2],
-    #                 'w21': [0.0, 0.0, 0.0],
-    #                 'x1': [0.1, 0.2, 0.6, 0.4],
-    #                 'x2': [0.9, 0.4, 0.7, 0.5]},
-    #             'surgery': {
-    #                 'w12': [0.35, 0.4, 0.5],
-    #                 'w21': [0.25, 0.3, 0.3],
-    #                 'x1': [0.6, 0.65, 0.7, 0.7],
-    #                 'x2': [0.75, 0.5, 0.6, 0.7]}}}
-    #     expected_attachments = {
-    #         55: {
-    #             'asbestos': {
-    #                 'a11': [0.1/0.08, 0.5/0.1, (0.4-0.2)/(0.6-0.2+0.2*(0.7-0.6))],
-    #                 'a22': [np.nan, -0.2/-0.5, (0.5-0.4)/(0.7-0.4)],  # Nan was -0.5/0.
-    #                 'a11_nan_details': [{}, {}, {}],
-    #                 'a22_nan_details': [{'n/0': 1, 'wij[k]==0': 1}, {}, {}]
-    #                 },
-    #             'surgery': {
-    #                 'a11': [0.05/(0.35*0.15),
-    #                         0.1/(0.05+0.4*-0.15),
-    #                         (0.7-0.65)/(0.7-0.65+0.5*(0.6-0.7))],  # denominator is 0.
-    #                 'a22': [-0.25/(0.25*-0.15),
-    #                         -0.15/(-0.25+0.3*0.15),
-    #                         (0.7-0.5)/(0.6-0.5+0.3*(0.7-0.6))],
-    #                 'a11_nan_details': [{}, {}, {'n/0': 1}],
-    #                 'a22_nan_details': [{}, {}, {}]
-    #                 }}}
-    #     computed_attachments = bt.compute_all_teams_attachments(
-    #         teams_data=teams_data,
-    #         start_k=0,
-    #         use_attachment_to_initial_opinion=False,
-    #         eps=0)
-    #     utils.assert_dict_equals(
-    #         d1=expected_attachments,
-    #         d2=computed_attachments,
-    #         almost_number_of_decimals=6)
+    # =========================================================================
+    # =============== get_all_groups_info_in_one_dataframe ====================
+    # =========================================================================
+    def test_get_all_groups_info_in_one_dataframe(self):
+        self.loader.team_id = 's10'
+        teams_log_list = [self.loader]
+        dt = [['s10', 'asbestos', 'pogs01', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'asbestos', 'pogs02', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'asbestos', 'pogs03', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'disaster', 'pogs01', '$1000', '1500', '$2000', '2000', 30, 30, 30, 100, 0, 0, 100, 0, 0, 0, -1, 2, 10, 10, 10, 10, 10, 10],
+              ['s10', 'disaster', 'pogs02', '$2000', '2000', '$2200', '2000', 0, 100, 0, 30, 30, 30, 30, 40, 30, -10, 10, -10, -3, -1, -2, 1, 10, 1],
+              ['s10', 'disaster', 'pogs03', '$3000', '$2500', '$2100', '$2000', 20, 20, 60, 30, 30, 40, 50, 50, 0, -10, 0, 0, 10, -10, -1, -10, -10, 10],
+              ['s10', 'sports', 'pogs01', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'sports', 'pogs02', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'sports', 'pogs03', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'school', 'pogs01', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'school', 'pogs02', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'school', 'pogs03', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'surgery', 'pogs01', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'surgery', 'pogs02', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+              ['s10', 'surgery', 'pogs03', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']]
+        expected = pd.DataFrame(dt, columns = [
+            'Group', 'Issue', 'Person', 'Initial opinion',
+            'Period1 opinion', 'Period2 opinion', 'Period3 opinion',
+            'Period1 w1', 'Period1 w2', 'Period1 w3',
+            'Period2 w1', 'Period2 w2', 'Period2 w3',
+            'Period3 w1', 'Period3 w2', 'Period3 w3',
+            'Period1 a1', 'Period1 a2', 'Period1 a3',
+            'Period2 a1', 'Period2 a2', 'Period2 a3',
+            'Period3 a1', 'Period3 a2', 'Period3 a3'])
+        computed = bt.get_all_groups_info_in_one_dataframe(teams_log_list)
+        pd_testing.assert_frame_equal(expected, computed, check_dtype=False)
