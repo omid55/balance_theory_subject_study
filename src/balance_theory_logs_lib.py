@@ -385,9 +385,9 @@ def get_all_groups_info_in_one_dataframe(
                         else:
                             member_appraisals.extend(appr)
                 if with_space:
-                    dt.append([team_id, issue, member] + member_answers + [''] + member_influences + member_appraisals)
+                    dt.append([team_id, issue, member.split('.')[-1]] + member_answers + [''] + member_influences + member_appraisals)
                 else:
-                    dt.append([team_id, issue, member] + member_answers + member_influences + member_appraisals)
+                    dt.append([team_id, issue, member.split('.')[-1]] + member_answers + member_influences + member_appraisals)
         if with_space:
             dt.append(['' for _ in range(len(dt[0]))])
     if with_space:
